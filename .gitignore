@@ -1,22 +1,19 @@
-# Python specific files and directories
+# Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.Python
+env/
 venv/
-.flaskenv  # If you use this for environment variables
+*.env
+.idea/
 
-# Database file
+# Database
 database.db
 
-# Machine Learning Model (often large, better to exclude)
-shade_classifier_model.pkl
-
-# Dynamically generated content (user uploads, reports)
+# Uploads (if they are temporary or user-generated)
 uploads/
-reports/
 
-# Operating System specific files
-.DS_Store
-Thumbs.db
-
-# VS Code specific settings (optional)
-.vscode/
+# Specific to your project
+shade_classifier_model.pkl

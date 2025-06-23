@@ -32,14 +32,68 @@
             <div class="detected-shades-section">
                 <h3>Detected Shades:</h3>
                 <ul>
+                    {# Display overall AI shade from the K-NN model if available #}
                     {% if overall_ml_shade %}
-                        <li><strong>Overall AI Prediction:</strong> <span class="shade-result">{{ overall_ml_shade }}</span></li>
+                        <li><strong>Overall AI Prediction (K-NN Model):</strong> <span class="shade-result">{{ overall_ml_shade }}</span></li>
                     {% endif %}
-                    <li><strong>Incisal Zone:</strong> <span class="shade-result">{{ shades.incisal }}</span></li>
-                    <li><strong>Middle Zone:</strong> <span class="shade-result">{{ shades.middle }}</span></li>
-                    <li><strong>Cervical Zone:</strong> <span class="shade-result">{{ shades.cervical }}</span></li>
+                    {# Display per-zone shades (rule-based or from more advanced tooth analysis, as current app.py does) #}
+                    <li><strong>Incisal Zone (Rule-based):</strong> <span class="shade-result">{{ shades.incisal }}</span></li>
+                    <li><strong>Middle Zone (Rule-based):</strong> <span class="shade-result">{{ shades.middle }}</span></li>
+                    <li><strong>Cervical Zone (Rule-based):</strong> <span class="shade-result">{{ shades.cervical }}</span></li>
                 </ul>
             </div>
+
+            {# ========================================================= #}
+            {# START: Display Advanced AI Insights (Simulated) #}
+            {# This section pulls data passed as face_features, tooth_analysis, aesthetic_suggestion #}
+            {# from the app.py's render_template call. #}
+            {# ========================================================= #}
+            <div class="detected-shades-section" style="margin-top: 30px;">
+                <h3>Advanced AI Insights (Simulated):</h3>
+                
+                {# Simulated Tooth Analysis Section #}
+                {% if tooth_analysis %}
+                    <h4>Simulated Tooth Analysis:</h4>
+                    <ul>
+                        <li><strong>Overall LAB (Simulated):</strong> L={{ tooth_analysis.overall_lab.L|round(2) }}, a={{ tooth_analysis.overall_lab.a|round(2) }}, b={{ tooth_analysis.overall_lab.b|round(2) }}</li>
+                        <li><strong>Simulated Overall Tooth Shade:</strong> <span class="shade-result">{{ tooth_analysis.simulated_overall_shade }}</span></li>
+                        <li><strong>Simulated Tooth Condition:</strong> {{ tooth_analysis.tooth_condition }}</li>
+                        <li><strong>Simulated Stain Presence:</strong> {{ tooth_analysis.stain_presence }}</li>
+                        <li><strong>Simulated Decay Presence:</strong> {{ tooth_analysis.decay_presence }}</li>
+                    </ul>
+                {% else %}
+                    <p>No simulated tooth analysis available.</p>
+                {% endif %}
+
+                {# Simulated Facial Features Section #}
+                {% if face_features %}
+                    <h4>Simulated Facial Features:</h4>
+                    <ul>
+                        <li><strong>Skin Tone:</strong> {{ face_features.skin_tone }}</li>
+                        <li><strong>Lip Color:</strong> {{ face_features.lip_color }}</li>
+                        <li><strong>Eye Contrast:</strong> {{ face_features.eye_contrast }}</li>
+                        <li><strong>Facial Harmony Score:</strong> {{ face_features.facial_harmony_score|round(2) }}</li>
+                    </ul>
+                {% else %}
+                    <p>No simulated facial features available.</p>
+                {% endif %}
+
+                {# Simulated Aesthetic Recommendation Section #}
+                {% if aesthetic_suggestion %}
+                    <h4>Simulated Aesthetic Recommendation:</h4>
+                    <ul>
+                        <li><strong>Suggested Aesthetic Shade:</strong> <span class="shade-result">{{ aesthetic_suggestion.suggested_aesthetic_shade }}</span></li>
+                        <li><strong>Confidence:</strong> {{ aesthetic_suggestion.aesthetic_confidence }}</li>
+                        <li><strong>Notes:</strong> {{ aesthetic_suggestion.recommendation_notes }}</li>
+                    </ul>
+                {% else %}
+                    <p>No simulated aesthetic suggestion available.</p>
+                {% endif %}
+            </div>
+            {# ========================================================= #}
+            {# END: Advanced AI Insights #}
+            {# ========================================================= #}
+
 
             <div class="report-actions">
                 <a href="{{ url_for('download_report', filename=report_filename) }}" class="button">Download PDF Report</a>
@@ -47,8 +101,9 @@
             </div>
 
             <p class="disclaimer">
-                This report provides an estimated tooth shade based on automated analysis.
-                Always consult with a dental professional for definitive assessment and treatment planning.
+                This report provides an estimated tooth shade based on automated analysis and **simulated advanced AI modules**.
+                The advanced insights (Facial Features, Tooth Analysis, Aesthetic Suggestion) are **placeholders** for future real AI integration.
+                Always consult with a dental professional for definitive assessment, diagnosis, and treatment planning.
             </p>
         </div>
     </main>

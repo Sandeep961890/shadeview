@@ -1,3 +1,9 @@
-flask
+Flask
 werkzeug
 fpdf
+opencv-python
+numpy
+scikit-learn
+joblib
+pandas
+python-dotenv # If you use a .flaskenv file

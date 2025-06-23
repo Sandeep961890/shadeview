@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Patient Details - SHADE VIEW</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <span class="logo">SHADE VIEW</span> <nav>
+            <a href="{{ url_for('dashboard') }}" aria-label="Go to Patient Entry Dashboard">Patient Entry</a>
+            <a href="{{ url_for('logout') }}" aria-label="Logout from your account">Logout</a>
+        </nav>
+    </header>
+
+    <main> <div class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %} {# IMPORTANT: Added with_categories=true #}
+                {% if messages %}
+                    <ul class="flashes">
+                    {% for category, message in messages %} {# Iterating with category #}
+                        <li class="{{ category }}">{{ message }}</li> {# Applied category as class #}
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+
+            <h1>Welcome, {{ username }}!</h1>
+            <p>Please enter the patient details to proceed.</p>
+
+            <div class="form-container"> <h2>Patient Entry Form</h2>
+                <form action="{{ url_for('save_patient_data') }}" method="POST">
+                    <label for="op_number">Enter OP Number:</label>
+                    <input type="text" id="op_number" name="op_number" placeholder="Unique OP Number" required>
+
+                    <label for="patient_name">Enter Patient Name:</label>
+                    <input type="text" id="patient_name" name="patient_name" placeholder="Patient's Full Name" required>
+
+                    <label for="age">Enter Age:</label>
+                    <input type="number" id="age" name="age" placeholder="Patient's Age" required>
+
+                    <label for="sex">Select Sex:</label>
+                    <select id="sex" name="sex">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+
+                    <label for="date">Enter Date of Birth:</label>
+                    <input type="date" id="date" name="date" required>
+
+                    <button type="submit">Save Patient & Next</button>
+                </form>
+            </div> <hr style="margin: 30px 0;">
+            <h3>Recently Added Patients:</h3> <div id="records">
+                {% if patients %}
+                    {% for patient in patients %}
+                        <p><b>{{ patient.patient_name }}</b> (OP: {{ patient.op_number }}, Age: {{ patient.age }}, Sex: {{ patient.sex }}, Date: {{ patient.record_date }}) - <a href="{{ url_for('upload_page', op_number=patient.op_number) }}">Upload Image</a></p>
+                    {% endfor %}
+                {% else %}
+                    <p>No patient records found yet.</p>
+                {% endif %}
+            </div>
+
+            <br>
+            <a href="{{ url_for('logout') }}" class="button secondary">Logout</a> </div>
+    </main> </body>
+</html>

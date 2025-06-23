@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register - Shade View</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <span class="logo">SHADE VIEW</span> <nav>
+            <a href="{{ url_for('home') }}" aria-label="Go to Home Page">Home</a>
+            <a href="{{ url_for('register') }}" aria-label="Register a New Account">Register</a>
+        </nav>
+    </header>
+
+    <main> <div class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %} {# Get categories #}
+                {% if messages %}
+                    <ul class="flashes">
+                    {% for category, message in messages %} {# Loop with category #}
+                        <li class="{{ category }}">{{ message }}</li> {# Apply category as class #}
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+
+            <div class="form-container"> <h1>Register</h1>
+                <form method="POST" action="{{ url_for('register') }}">
+                    <label for="phone">Phone Number:</label> <input type="tel" id="phone" name="phone" placeholder="Phone Number" required><br>
+
+                    <label for="username">User Name:</label> <input type="text" id="username" name="username" placeholder="User Name" required><br>
+
+                    <label for="password">Password:</label> <input type="password" id="password" name="password" placeholder="Password" required><br>
+
+                    <button type="submit" class="button">Register</button> </form>
+                <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a>.</p>
+            </div>
+        </div>
+    </main> </body>
+</html>

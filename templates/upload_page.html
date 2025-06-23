@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Image - Shade View</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <span class="logo">SHADE VIEW</span>
+        <nav>
+            <a href="{{ url_for('dashboard') }}" aria-label="Go to Patient Entry Dashboard">Patient Entry</a>
+            <a href="{{ url_for('logout') }}" aria-label="Logout from your account">Logout</a>
+        </nav>
+    </header>
+
+    <main> <div class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %} {# IMPORTANT: Added with_categories=true #}
+                {% if messages %}
+                    <ul class="flashes">
+                    {% for category, message in messages %} {# Iterating with category #}
+                        <li class="{{ category }}">{{ message }}</li> {# Applied category as class #}
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+
+            <h1>Upload Tooth Image</h1>
+            <p>For Patient: <strong>{{ patient_name }} (OP Number: {{ op_number }})</strong></p> {# Display patient name as well #}
+
+            <div class="form-container"> <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="op_number" value="{{ op_number }}">
+                    <label for="image">Select Image:</label>
+                    <input type="file" id="image" name="image" accept="image/*" required>
+                    <button type="submit" class="button">Upload & Analyze Shade</button>
+                </form>
+            </div>
+
+            <br>
+            <a href="{{ url_for('dashboard') }}" class="button secondary">Back to Patient Entry</a>
+            <a href="{{ url_for('logout') }}" class="button secondary">Logout</a>
+        </div>
+    </main> </body>
+</html>

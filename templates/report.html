@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Report - Shade View</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <span class="logo">SHADE VIEW</span>
+        <nav>
+            <a href="{{ url_for('dashboard') }}" aria-label="Go to Patient Dashboard">Dashboard</a>
+            <a href="{{ url_for('logout') }}" aria-label="Logout from your account">Logout</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul class="flashes">
+                    {% for category, message in messages %}
+                        <li class="{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+
+            <h1>Shade Analysis Report</h1>
+            <p><strong>Patient Name:</strong> {{ user_name }}</p>
+
+            <div class="detected-shades-section">
+                <h3>Detected Shades:</h3>
+                <ul>
+                    {% if overall_ml_shade %}
+                        <li><strong>Overall AI Prediction:</strong> <span class="shade-result">{{ overall_ml_shade }}</span></li>
+                    {% endif %}
+                    <li><strong>Incisal Zone:</strong> <span class="shade-result">{{ shades.incisal }}</span></li>
+                    <li><strong>Middle Zone:</strong> <span class="shade-result">{{ shades.middle }}</span></li>
+                    <li><strong>Cervical Zone:</strong> <span class="shade-result">{{ shades.cervical }}</span></li>
+                </ul>
+            </div>
+
+            <div class="report-actions">
+                <a href="{{ url_for('download_report', filename=report_filename) }}" class="button">Download PDF Report</a>
+                <a href="{{ url_for('dashboard') }}" class="button secondary">Go to Dashboard</a>
+            </div>
+
+            <p class="disclaimer">
+                This report provides an estimated tooth shade based on automated analysis.
+                Always consult with a dental professional for definitive assessment and treatment planning.
+            </p>
+        </div>
+    </main>
+</body>
+</html>

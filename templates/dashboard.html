@@ -1,67 +1,126 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Patient Details - SHADE VIEW</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shade View - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .flash-message {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+        }
+        .flash-success {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+        .flash-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+        .flash-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border-color: #bee5eb;
+        }
+    </style>
 </head>
-<body>
-    <header>
-        <span class="logo">SHADE VIEW</span> <nav>
-            <a href="{{ url_for('dashboard') }}" aria-label="Go to Patient Entry Dashboard">Patient Entry</a>
-            <a href="{{ url_for('logout') }}" aria-label="Logout from your account">Logout</a>
-        </nav>
-    </header>
+<body class="min-h-screen flex flex-col items-center py-10 px-4 sm:px-6 lg:px-8 bg-gray-100 text-gray-800">
+    <div class="max-w-4xl w-full bg-white shadow-lg rounded-xl p-6 sm:p-8 lg:p-10 mb-8">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl sm:text-4xl font-bold text-indigo-700">Shade View Dashboard</h1>
+            <a href="{{ url_for('logout') }}" class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition ease-in-out duration-150">
+                Logout
+            </a>
+        </div>
 
-    <main> <div class="container">
-            {% with messages = get_flashed_messages(with_categories=true) %} {# IMPORTANT: Added with_categories=true #}
-                {% if messages %}
-                    <ul class="flashes">
-                    {% for category, message in messages %} {# Iterating with category #}
-                        <li class="{{ category }}">{{ message }}</li> {# Applied category as class #}
+        <p class="text-lg text-gray-700 mb-4">Welcome, <strong class="font-semibold">{{ user.username }}</strong> (User ID: <span class="font-mono text-sm bg-gray-200 px-2 py-1 rounded">{{ user.id }}</span>)</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="mb-6">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">{{ message }}</div>
                     {% endfor %}
-                    </ul>
-                {% endif %}
-            {% endwith %}
+                </div>
+            {% endif %}
+        {% endwith %}
 
-            <h1>Welcome, {{ username }}!</h1>
-            <p>Please enter the patient details to proceed.</p>
-
-            <div class="form-container"> <h2>Patient Entry Form</h2>
-                <form action="{{ url_for('save_patient_data') }}" method="POST">
-                    <label for="op_number">Enter OP Number:</label>
-                    <input type="text" id="op_number" name="op_number" placeholder="Unique OP Number" required>
-
-                    <label for="patient_name">Enter Patient Name:</label>
-                    <input type="text" id="patient_name" name="patient_name" placeholder="Patient's Full Name" required>
-
-                    <label for="age">Enter Age:</label>
-                    <input type="number" id="age" name="age" placeholder="Patient's Age" required>
-
-                    <label for="sex">Select Sex:</label>
-                    <select id="sex" name="sex">
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Other">Other</option>
-                    </select>
-
-                    <label for="date">Enter Date of Birth:</label>
-                    <input type="date" id="date" name="date" required>
-
-                    <button type="submit">Save Patient & Next</button>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Patient Entry Form -->
+            <div class="bg-gray-50 p-6 rounded-lg shadow-md border border-gray-200">
+                <h2 class="text-2xl font-semibold text-gray-900 mb-4">Add New Patient</h2>
+                <form action="{{ url_for('save_patient_data') }}" method="POST" class="space-y-4">
+                    <div>
+                        <label for="op_number" class="block text-sm font-medium text-gray-700">OP Number:</label>
+                        <input type="text" id="op_number" name="op_number" required
+                               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="patient_name" class="block text-sm font-medium text-gray-700">Patient Name:</label>
+                        <input type="text" id="patient_name" name="patient_name" required
+                               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="age" class="block text-sm font-medium text-gray-700">Age:</label>
+                        <input type="number" id="age" name="age" required min="0"
+                               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="sex" class="block text-sm font-medium text-gray-700">Sex:</label>
+                        <select id="sex" name="sex" required
+                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <option value="">Select Sex</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="date" class="block text-sm font-medium text-gray-700">Record Date:</label>
+                        <input type="date" id="date" name="date" value="{{ current_date }}" required
+                               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </div>
+                    <button type="submit"
+                            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition ease-in-out duration-150">
+                        Save Patient & Upload Image
+                    </button>
                 </form>
-            </div> <hr style="margin: 30px 0;">
-            <h3>Recently Added Patients:</h3> <div id="records">
-                {% if patients %}
-                    {% for patient in patients %}
-                        <p><b>{{ patient.patient_name }}</b> (OP: {{ patient.op_number }}, Age: {{ patient.age }}, Sex: {{ patient.sex }}, Date: {{ patient.record_date }}) - <a href="{{ url_for('upload_page', op_number=patient.op_number) }}">Upload Image</a></p>
-                    {% endfor %}
-                {% else %}
-                    <p>No patient records found yet.</p>
-                {% endif %}
             </div>
 
-            <br>
-            <a href="{{ url_for('logout') }}" class="button secondary">Logout</a> </div>
-    </main> </body>
+            <!-- Recently Added Patients -->
+            <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                <h2 class="text-2xl font-semibold text-gray-900 mb-4">Recently Added Patients</h2>
+                {% if patients %}
+                    <ul class="divide-y divide-gray-200">
+                        {% for patient in patients %}
+                            <li class="py-4 flex justify-between items-center">
+                                <div>
+                                    <p class="text-lg font-medium text-indigo-700">{{ patient.patient_name }} (OP: {{ patient.op_number }})</p>
+                                    <p class="text-sm text-gray-600">Age: {{ patient.age }}, Sex: {{ patient.sex }}</p>
+                                    <p class="text-sm text-gray-600">Record Date: {{ patient.record_date }}</p>
+                                </div>
+                                <a href="{{ url_for('upload_page', op_number=patient.op_number) }}"
+                                   class="ml-4 px-3 py-1 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition ease-in-out duration-150">
+                                    Upload Image
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-gray-600">No patients added yet. Start by filling the form!</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
 </html>

@@ -1,43 +1,87 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Upload Image - Shade View</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image for {{ patient_name }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .flash {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .flash.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .flash.error, .flash.danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .flash.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
 </head>
-<body>
-    <header>
-        <span class="logo">SHADE VIEW</span>
-        <nav>
-            <a href="{{ url_for('dashboard') }}" aria-label="Go to Patient Entry Dashboard">Patient Entry</a>
-            <a href="{{ url_for('logout') }}" aria-label="Logout from your account">Logout</a>
-        </nav>
-    </header>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+    <div class="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Upload Image for Patient</h2>
+        <p class="text-lg text-gray-700 mb-4 text-center">Patient: <strong class="font-semibold">{{ patient_name }}</strong> (OP: {{ op_number }})</p>
 
-    <main> <div class="container">
-            {% with messages = get_flashed_messages(with_categories=true) %} {# IMPORTANT: Added with_categories=true #}
-                {% if messages %}
-                    <ul class="flashes">
-                    {% for category, message in messages %} {# Iterating with category #}
-                        <li class="{{ category }}">{{ message }}</li> {# Applied category as class #}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="mb-6">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
                     {% endfor %}
-                    </ul>
-                {% endif %}
-            {% endwith %}
+                </div>
+            {% endif %}
+        {% endwith %}
 
-            <h1>Upload Tooth Image</h1>
-            <p>For Patient: <strong>{{ patient_name }} (OP Number: {{ op_number }})</strong></p> {# Display patient name as well #}
-
-            <div class="form-container"> <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
-                    <input type="hidden" name="op_number" value="{{ op_number }}">
-                    <label for="image">Select Image:</label>
-                    <input type="file" id="image" name="image" accept="image/*" required>
-                    <button type="submit" class="button">Upload & Analyze Shade</button>
-                </form>
+        <form action="{{ url_for('upload_file') }}" method="POST" enctype="multipart/form-data" class="mt-8 space-y-6">
+            <input type="hidden" name="op_number" value="{{ op_number }}">
+            <input type="hidden" name="patient_name" value="{{ patient_name }}"> {# Pass patient name to upload endpoint #}
+            <div>
+                <label for="file" class="block text-sm font-medium text-gray-700">Select Image File (JPG, PNG)</label>
+                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                    <div class="space-y-1 text-center">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                            <path d="M28 8H10c-1.1 0-2 .9-2 2v28c0 1.1.9 2 2 2h28c1.1 0 2-.9 2-2V18m-2-10V4h-6v4m-2 0H16m4 0h6m8 0h6v6m0 4v8m0 4v8m0 4v6c0 1.1-.9 2-2 2H10c-1.1 0-2-.9-2-2V10c0-1.1.9-2 2-2h18M42 20h-8c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2v-8c0-1.1-.9-2-2-2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <div class="flex text-sm text-gray-600">
+                            <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                                <span>Upload a file</span>
+                                <input id="file-upload" name="file" type="file" class="sr-only" accept="image/jpeg, image/png">
+                            </label>
+                            <p class="pl-1">or drag and drop</p>
+                        </div>
+                        <p class="text-xs text-gray-500">
+                            PNG, JPG, GIF up to 10MB
+                        </p>
+                    </div>
+                </div>
             </div>
-
-            <br>
-            <a href="{{ url_for('dashboard') }}" class="button secondary">Back to Patient Entry</a>
-            <a href="{{ url_for('logout') }}" class="button secondary">Logout</a>
-        </div>
-    </main> </body>
+            <div>
+                <button type="submit"
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Process Image
+                </button>
+            </div>
+            <div class="text-center mt-4">
+                <a href="{{ url_for('dashboard') }}" class="text-indigo-600 hover:text-indigo-500 text-sm font-medium">Back to Dashboard</a>
+            </div>
+        </form>
+    </div>
+</body>
 </html>

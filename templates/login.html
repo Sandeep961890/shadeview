@@ -1,37 +1,28 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login - Shade View</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <header>
-        <span class="logo">SHADE VIEW</span> <nav>
-            <a href="{{ url_for('home') }}" aria-label="Go to Home Page">Home</a>
-            <a href="{{ url_for('register') }}" aria-label="Register a New Account">Register</a>
-        </nav>
-    </header>
+{% extends 'layout.html' %}
 
-    <main> <div class="container">
-            {% with messages = get_flashed_messages(with_categories=true) %} {# Get categories #}
-                {% if messages %}
-                    <ul class="flashes">
-                    {% for category, message in messages %} {# Loop with category #}
-                        <li class="{{ category }}">{{ message }}</li> {# Apply category as class #}
-                    {% endfor %}
-                    </ul>
-                {% endif %}
-            {% endwith %}
+{% block title %}Login{% endblock %}
 
-            <div class="form-container"> <h1>Login</h1>
-                <form method="POST" action="{{ url_for('login') }}">
-                    <label for="phone">Phone Number:</label> <input type="tel" id="phone" name="phone" placeholder="Phone Number" required><br>
-
-                    <label for="password">Password:</label> <input type="password" id="password" name="password" placeholder="Password" required><br>
-
-                    <button type="submit" class="button">Login</button> </form>
-                <p>Don't have an account? <a href="{{ url_for('register') }}">Register here</a>.</p>
-            </div>
+{% block content %}
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Login to Shade View</h2>
+    <form method="POST" action="{{ url_for('login') }}" class="space-y-4">
+        <div>
+            <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+            <input type="text" id="username" name="username" required
+                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
         </div>
-    </main> </body>
-</html>
+        <div>
+            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+            <input type="password" id="password" name="password" required
+                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+        </div>
+        <div>
+            <button type="submit"
+                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Log In
+            </button>
+        </div>
+    </form>
+    <p class="mt-6 text-center text-sm text-gray-600">
+        Don't have an account? <a href="{{ url_for('register') }}" class="font-medium text-indigo-600 hover:text-indigo-500">Register here</a>
+    </p>
+{% endblock %}
